@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import logo from "../../assets/logo.png";
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (selectedDate) {
+      fetch(`http://localhost:3000/check-available-time?date=${encodeURIComponent(selectedDate)}`)
+        .then(response => response.json())
+        .then(data => setAvailableSlots(data.slots))
+        .catch(err => setError("Failed to fetch available slots"));
+    }
+  }, [selectedDate]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -16,18 +29,29 @@ const Navbar = () => {
     document.getElementById('my_modal_3').close();
   };
 
+  const handleDateChange = (event) => {
+    setSelectedDate(event.target.value);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const name = event.target.name.value;
     const address = event.target.address.value;
-    const datetime = event.target.datetime.value;
+    const datetime = `${event.target.date.value}T${event.target.time.value}`;
     const number = event.target.number.value;
     const email = event.target.email.value;
 
     const appointment = { name, address, datetime, number, email };
 
     try {
-      const response = await fetch("http://localhost:3000/addapp", {
+      const response = await fetch(`http://localhost:3000/check-slot?datetime=${encodeURIComponent(datetime)}`);
+      const slotAvailable = await response.json();
+      
+      if (!slotAvailable.available) {
+        throw new Error('Selected time slot is not available.');
+      }
+
+      const responseBook = await fetch("http://localhost:3000/addapp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,11 +59,11 @@ const Navbar = () => {
         body: JSON.stringify(appointment),
       });
 
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
+      if (!responseBook.ok) {
+        throw new Error(`Server responded with status: ${responseBook.status}`);
       }
 
-      const data = await response.json();
+      const data = await responseBook.json();
       console.log("Data:", data);
       if (data.insertedId) {
         Swal.fire({
@@ -54,7 +78,7 @@ const Navbar = () => {
       console.error("An error occurred:", error.message);
       Swal.fire({
         title: 'Error!',
-        text: 'Failed to book appointment. Please try again.',
+        text: error.message || 'Failed to book appointment. Please try again.',
         icon: 'error',
         confirmButtonText: 'Okay'
       });
@@ -129,13 +153,23 @@ const Navbar = () => {
                   />
                 </div>
                 <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Date and Time</label>
+                  <label className="block text-sm font-medium text-gray-700">Date</label>
                   <input 
-                    type="datetime-local" 
-                    name="datetime"
+                    type="date" 
+                    name="date"
                     className="input input-bordered w-full" 
+                    min={new Date().toISOString().split('T')[0]} // Disallow past dates
+                    onChange={handleDateChange}
                     required 
                   />
+                </div>
+                <div className="mb-2">
+                  <label className="block text-sm font-medium text-gray-700">Time</label>
+                  <select name="time" className="select select-bordered w-full" required>
+                    {availableSlots.map((slot) => (
+                      <option key={slot} value={slot}>{slot}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="flex justify-end">
                   <button 
