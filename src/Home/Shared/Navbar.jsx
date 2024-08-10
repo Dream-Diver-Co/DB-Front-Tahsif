@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import ReCAPTCHA from 'react-google-recaptcha';
 import logo from "../../assets/logo.png";
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [availableSlots, setAvailableSlots] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
-  const [timeSlots, setTimeSlots] = useState([]);
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -33,6 +34,10 @@ const Navbar = () => {
     setSelectedDate(event.target.value);
   };
 
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaValue(value);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const name = event.target.name.value;
@@ -41,7 +46,17 @@ const Navbar = () => {
     const number = event.target.number.value;
     const email = event.target.email.value;
 
-    const appointment = { name, address, datetime, number, email };
+    const appointment = { name, address, datetime, number, email, recaptcha: recaptchaValue };
+
+    if (!recaptchaValue) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Please complete the reCAPTCHA',
+        icon: 'error',
+        confirmButtonText: 'Okay'
+      });
+      return;
+    }
 
     try {
       const response = await fetch(`http://localhost:3000/check-slot?datetime=${encodeURIComponent(datetime)}`);
@@ -170,6 +185,12 @@ const Navbar = () => {
                       <option key={slot} value={slot}>{slot}</option>
                     ))}
                   </select>
+                </div>
+                <div className="mb-2">
+                  <ReCAPTCHA
+                    sitekey="6LdpMyIqAAAAAG_KsOprEaaIAly9e1UOiW_qBhyt"
+                    onChange={handleRecaptchaChange}
+                  />
                 </div>
                 <div className="flex justify-end">
                   <button 
