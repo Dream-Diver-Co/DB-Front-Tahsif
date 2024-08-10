@@ -1,5 +1,5 @@
 
-import hero from "../assets/hero.mp4";
+import hero from "../assets/new_hero.mp4";
 
 const HeroSection = ({ onOpenModal }) => {
 

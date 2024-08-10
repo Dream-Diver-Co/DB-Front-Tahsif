@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import ReCAPTCHA from 'react-google-recaptcha';
+import emailjs from '@emailjs/browser';
 import logo from "../../assets/logo.png";
 
 const Navbar = () => {
@@ -10,6 +11,7 @@ const Navbar = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [recaptchaValue, setRecaptchaValue] = useState(null);
   const [error, setError] = useState("");
+  const form = useRef();
 
   useEffect(() => {
     if (selectedDate) {
@@ -81,12 +83,35 @@ const Navbar = () => {
       const data = await responseBook.json();
       console.log("Data:", data);
       if (data.insertedId) {
-        Swal.fire({
-          title: 'Success!',
-          text: 'Appointment Successfully Booked and Emails Sent',
-          icon: 'success',
-          confirmButtonText: 'Done'
-        });
+        const templateParams = {
+          name: name,          // Maps to {{name}} in the template
+          email: email,        // Maps to {{email}} in the template
+          address: address,    // Maps to {{address}} in the template
+          number: number,      // Maps to {{number}} in the template
+          date: event.target.date.value, // Maps to {{date}} in the template
+          time: event.target.time.value  // Maps to {{time}} in the template
+        };
+        
+
+        // Send confirmation email using emailjs.send instead of sendForm
+        emailjs.send('service_hif5and', 'template_itcg9u7', templateParams, '-rKJeI0iB4ZX-hOPq')
+          .then(() => {
+            Swal.fire({
+              title: 'Success!',
+              text: 'Appointment Successfully Booked and Email Sent',
+              icon: 'success',
+              confirmButtonText: 'Done'
+            });
+          }, (error) => {
+            console.log('FAILED...', error.text);
+            Swal.fire({
+              title: 'Error!',
+              text: 'Failed to send confirmation email.',
+              icon: 'error',
+              confirmButtonText: 'Okay'
+            });
+          });
+
         handleCloseModal();
       }
     } catch (error) {
@@ -122,53 +147,19 @@ const Navbar = () => {
           </button>
           <dialog id="my_modal_3" className="modal">
             <div className="modal-box">
-              <form onSubmit={handleSubmit}>
-                <button 
-                  type="button" 
-                  className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" 
-                  onClick={handleCloseModal}
-                >
-                  ✕
-                </button>
-                <h3 className="font-bold text-lg">Appointment Form</h3>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <input 
-                    type="text" 
-                    name="name"
-                    className="input input-bordered w-full" 
-                    required 
-                  />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-                  <input 
-                    type="tel" 
-                    name="number"
-                    className="input input-bordered w-full" 
-                    required 
-                  />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
-                  <input 
-                    type="email" 
-                    name="email"
-                    className="input input-bordered w-full" 
-                    required 
-                  />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Address</label>
-                  <input 
-                    type="text" 
-                    name="address"
-                    className="input input-bordered w-full" 
-                    required 
-                  />
-                </div>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Date</label>
+            <form ref={form} onSubmit={handleSubmit}>
+              <button 
+                type="button" 
+                className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" 
+                onClick={handleCloseModal}
+              >
+                ✕
+              </button>
+              <h3 className="font-light text-3xl italic text-center">Appointment Form</h3>
+  
+              <div className="flex items-center justify-start mb-2">
+                <div className="w-1/2 mr-2">
+                  <label className="block text-sm font-medium text-gray-700 italic pb-2">Date</label>
                   <input 
                     type="date" 
                     name="date"
@@ -178,36 +169,82 @@ const Navbar = () => {
                     required 
                   />
                 </div>
-                <div className="mb-2">
-                  <label className="block text-sm font-medium text-gray-700">Time</label>
+                <div className="w-1/2">
+                  <label className="block text-sm font-medium text-gray-700 italic pb-2">Time</label>
                   <select name="time" className="select select-bordered w-full" required>
                     {availableSlots.map((slot) => (
                       <option key={slot} value={slot}>{slot}</option>
                     ))}
                   </select>
                 </div>
-                <div className="mb-2">
-                  <ReCAPTCHA
-                    sitekey="6LdpMyIqAAAAAG_KsOprEaaIAly9e1UOiW_qBhyt"
-                    onChange={handleRecaptchaChange}
+              </div>
+  
+              <div className="flex items-center justify-start mb-2">
+                <div className="w-1/2 mr-2">
+                  <label className="block text-sm font-medium text-gray-700 italic pb-2">Name</label>
+                  <input 
+                    type="text" 
+                    name="name"
+                    className="input input-bordered w-full" 
+                    required 
                   />
                 </div>
-                <div className="flex justify-end">
-                  <button 
-                    type="button" 
-                    className="btn btn-secondary mr-2" 
-                    onClick={handleCloseModal}
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    type="submit" 
-                    className="btn btn-primary"
-                  >
-                    Confirm
-                  </button>
+                <div className="w-1/2">
+                  <label className="block text-sm font-medium text-gray-700 italic pb-2">Phone Number</label>
+                  <input 
+                    type="tel" 
+                    name="number"
+                    className="input input-bordered w-full" 
+                    required 
+                  />
                 </div>
-              </form>
+              </div>
+  
+              <div className="flex items-center justify-start mb-2">
+                <div className="w-1/2 mr-2">
+                  <label className="block text-sm font-medium text-gray-700 italic pb-2">Email</label>
+                  <input 
+                    type="email" 
+                    name="email"
+                    className="input input-bordered w-full" 
+                    required 
+                  />
+                </div>
+                <div className="w-1/2">
+                  <label className="block text-sm font-medium text-gray-700 italic pb-2">Address</label>
+                  <input 
+                    type="text" 
+                    name="address"
+                    className="input input-bordered w-full" 
+                    required 
+                  />
+                </div>
+              </div>
+  
+              <div className="mb-2">
+                <ReCAPTCHA
+                  sitekey="6LdpMyIqAAAAAG_KsOprEaaIAly9e1UOiW_qBhyt"
+                  onChange={handleRecaptchaChange}
+                />
+              </div>
+  
+              <div className="flex justify-end">
+                <button 
+                  type="button" 
+                  className="btn bg-red-900 text-white hover:bg-red-700 mr-2" 
+                  onClick={handleCloseModal}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  className="btn bg-green-900 text-white hover:bg-green-700"
+                >
+                  Confirm
+                </button>
+              </div>
+            </form>
+
             </div>
           </dialog>
         </div>
