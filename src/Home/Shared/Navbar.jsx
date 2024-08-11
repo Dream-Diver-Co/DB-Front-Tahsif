@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import ReCAPTCHA from 'react-google-recaptcha';
 import emailjs from '@emailjs/browser';
-import logo from "../../assets/logo.png";
+import logo from "../../assets/img/logo-2.png";
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,16 +84,14 @@ const Navbar = () => {
       console.log("Data:", data);
       if (data.insertedId) {
         const templateParams = {
-          name: name,          // Maps to {{name}} in the template
-          email: email,        // Maps to {{email}} in the template
-          address: address,    // Maps to {{address}} in the template
-          number: number,      // Maps to {{number}} in the template
-          date: event.target.date.value, // Maps to {{date}} in the template
-          time: event.target.time.value  // Maps to {{time}} in the template
+          name: name,
+          email: email,
+          address: address,
+          number: number,
+          date: event.target.date.value,
+          time: event.target.time.value
         };
-        
 
-        // Send confirmation email using emailjs.send instead of sendForm
         emailjs.send('service_hif5and', 'template_itcg9u7', templateParams, '-rKJeI0iB4ZX-hOPq')
           .then(() => {
             Swal.fire({
@@ -126,24 +124,113 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
-      <div className="container mx-auto px-4 py-2 flex justify-around items-center">
-        <div>
-          <img src={logo} alt="Logo" />
+    <div className="navbar bg-gray-300 lg:h-20 h-16 flex items-center justify-center">
+      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-start space-x-4">
+        <div className=''>
+          <img src={logo} alt="Logo" className='w-10 lg:w-24 h-6 lg:h-10'/>
         </div>
-        <div className="hidden md:flex space-x-4 italic">
-          <Link to="/" className="text-gray-800 hover:bg-gray-200 px-3 py-2 rounded">Home</Link>
-          <Link to="/about" className="text-gray-800 hover:bg-gray-200 px-3 py-2 rounded">About Us</Link>
-          <Link to="/categories" className="text-gray-800 hover:bg-gray-200 px-3 py-2 rounded">Categories</Link>
-          <Link to="/shops" className="text-gray-800 hover:bg-gray-200 px-3 py-2 rounded">Shops</Link>
-          <Link to="/contact" className="text-gray-800 hover:bg-gray-200 px-3 py-2 rounded">Contact</Link>
+
+        <div className="flex items-center lg:hidden">
+          <h1 className="text-white bg-yellow-600 px-4 lg:px-6 flex items-center font-bold h-16 lg:h-20 text-xl lg:text-2xl">
+            DIAMOND BRIDAL
+          </h1>
         </div>
-        <div>
-          <button 
-            className="btn px-6 py-3 bg-red-700 text-white font-semibold rounded-none hover:bg-red-900 transition duration-300"
+
+        <div className="dropdown lg:hidden">
+          <div tabIndex={0} role="button" className="btn btn-ghost">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h8m-8 6h16" />
+            </svg>
+          </div>
+
+          <ul
+            tabIndex={0}
+            className="menu menu-sm dropdown-content bg-white rounded-box z-[1] mt-3 w-52 p-2 shadow-lg">
+            <NavLink to='/' className="block px-4 py-2 hover:bg-gray-200">Home</NavLink>
+            <NavLink to='/about' className="block px-4 py-2 hover:bg-gray-200">About</NavLink>
+            <NavLink to='/services' className="block px-4 py-2 hover:bg-gray-200">Services</NavLink>
+            <div className="relative group">
+              <button className="flex items-center px-4 py-2 hover:bg-gray-200">
+                Shop
+                <i className="fas fa-chevron-down ml-2"></i>
+              </button>
+              <ul className="absolute left-0 mt-2 w-40 bg-white p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <li><NavLink to='/shop1' className="block px-4 py-2 hover:bg-gray-200">Shop 1</NavLink></li>
+                <li><NavLink to='/shop2' className="block px-4 py-2 hover:bg-gray-200">Shop 2</NavLink></li>
+                <li><NavLink to='/shop3' className="block px-4 py-2 hover:bg-gray-200">Shop 3</NavLink></li>
+              </ul>
+            </div>
+            <div className="relative group">
+              <button className="flex items-center px-4 py-2 hover:bg-gray-200">
+                Category
+                <i className="fas fa-chevron-down ml-2"></i>
+              </button>
+              <ul className="absolute left-0 mt-2 w-40 bg-white p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <li><NavLink to='/category1' className="block px-4 py-2 hover:bg-gray-200">Category 1</NavLink></li>
+                <li><NavLink to='/category2' className="block px-4 py-2 hover:bg-gray-200">Category 2</NavLink></li>
+                <li><NavLink to='/category3' className="block px-4 py-2 hover:bg-gray-200">Category 3</NavLink></li>
+              </ul>
+            </div>
+            <NavLink to='/contact' className="block px-4 py-2 hover:bg-gray-200">Contact</NavLink>
+          </ul>
+        </div>
+      </div>
+
+      <div className="hidden lg:flex items-center w-full justify-center">
+        <ul className="menu menu-horizontal px-1 flex items-center justify-center lg:space-x-4 text-lg font-medium">
+          <NavLink to='/'>Home</NavLink>
+          <NavLink to='/about'>About</NavLink>
+          <NavLink to='/services'>Services</NavLink>
+
+          <div className="flex items-center">
+            <h1 className="text-white bg-yellow-600 px-8 lg:px-16 flex items-center font-bold h-16 lg:h-20 text-xl lg:text-3xl">
+              DIAMOND BRIDAL
+            </h1>
+          </div>
+
+          <div className="relative group">
+            <button className="flex items-center">
+              Shop
+              <i className="fas fa-chevron-down ml-2"></i>
+            </button>
+            <ul className="absolute left-0 mt-2 w-40 bg-white p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <li><NavLink to='/shop1' className="block px-4 py-2 hover:bg-gray-200">Shop 1</NavLink></li>
+              <li><NavLink to='/shop2' className="block px-4 py-2 hover:bg-gray-200">Shop 2</NavLink></li>
+              <li><NavLink to='/shop3' className="block px-4 py-2 hover:bg-gray-200">Shop 3</NavLink></li>
+            </ul>
+          </div>
+
+          <div className="relative group">
+            <button className="flex items-center">
+              Category
+              <i className="fas fa-chevron-down ml-2"></i>
+            </button>
+            <ul className="absolute left-0 mt-2 w-40 bg-white p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <li><NavLink to='/category1' className="block px-4 py-2 hover:bg-gray-200">Category 1</NavLink></li>
+              <li><NavLink to='/category2' className="block px-4 py-2 hover:bg-gray-200">Category 2</NavLink></li>
+              <li><NavLink to='/category3' className="block px-4 py-2 hover:bg-gray-200">Category 3</NavLink></li>
+            </ul>
+          </div>
+          <NavLink to='/contact' className="block px-4 py-2 hover:bg-gray-200">Contact</NavLink>
+        </ul>
+      </div>
+
+      <div className="hidden lg:block">
+      <button 
+            className="btn p-5 bg-yellow-600 border-none  text-white font-semibold rounded-none hover:bg-green-700 transition duration-300"
             onClick={handleOpenModal}
           >
-            Book - Appointment
+          Appointment
           </button>
           <dialog id="my_modal_3" className="modal">
             <div className="modal-box">
@@ -247,9 +334,12 @@ const Navbar = () => {
 
             </div>
           </dialog>
-        </div>
       </div>
-    </nav>
+      </div>
+
+      
+     
+    </div>
   );
 };
 
