@@ -42,7 +42,7 @@ const HeroSection = () => {
         </div>
 
         {/* Middle Column */}
-        <div className="lg:w-1/3 mb-6 lg:mb-0 relative h-[600px]">
+        <div className="lg:w-1/2 mb-6 lg:mb-0 relative h-[600px]">
           <video
             src={videoSrc}
             className="w-full h-full object-cover"

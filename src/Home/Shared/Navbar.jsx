@@ -15,7 +15,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (selectedDate) {
-      fetch(`http://localhost:3000/check-available-time?date=${encodeURIComponent(selectedDate)}`)
+      fetch(`http://localhost:5000/check-available-time?date=${encodeURIComponent(selectedDate)}`)
         .then(response => response.json())
         .then(data => setAvailableSlots(data.slots))
         .catch(err => setError("Failed to fetch available slots"));
@@ -61,14 +61,14 @@ const Navbar = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/check-slot?datetime=${encodeURIComponent(datetime)}`);
+      const response = await fetch(`http://localhost:5000/check-slot?datetime=${encodeURIComponent(datetime)}`);
       const slotAvailable = await response.json();
       
       if (!slotAvailable.available) {
         throw new Error('Selected time slot is not available.');
       }
 
-      const responseBook = await fetch("http://localhost:3000/addapp", {
+      const responseBook = await fetch("http://localhost:5000/addapp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
