@@ -1,51 +1,51 @@
-// src/components/CustomerMoments.jsx
 import React from 'react';
-import { FaQuoteLeft } from 'react-icons/fa';
-import testimonialImage1 from '../../assets/customer1.jpg';
-import testimonialImage2 from '../../assets/customer2.jpg';
-import testimonialImage3 from '../../assets/customer3.jpg';
+import 'tailwindcss/tailwind.css';
+import ModalImage from "react-modal-image";
 
-const testimonials = [
-  {
-    id: 1,
-    image: testimonialImage1,
-    name: 'Emily Johnson',
-    quote: 'The dress was absolutely stunning and made my special day even more memorable. The quality and fit were perfect!',
-  },
-  {
-    id: 2,
-    image: testimonialImage2,
-    name: 'Sophia Martinez',
-    quote: 'I had an amazing experience with this bridal shop. The staff was incredibly helpful, and the dress was beyond my expectations!',
-  },
-  {
-    id: 3,
-    image: testimonialImage3,
-    name: 'Olivia Smith',
-    quote: 'I felt like a princess in my dress. The attention to detail and customer service were top-notch. Thank you for making my wedding perfect!',
-  },
-];
+// Importing images
+import project5 from "../../assets/img/project-5.jpg";
+import service1 from "../../assets/img/service-1.jpg";
+import cu3 from "../../assets/img/cu3.jpg";
+import cu6 from "../../assets/img/cu6.jpg";
+import project7 from "../../assets/img/project-7.jpg";
+import hero2 from "../../assets/img/hero-2.jpg";
+import cu4 from "../../assets/img/cu4.jpg";
+import cu8 from "../../assets/img/cu8.jpg";
 
-const Moment = () => {
+const MomentsWithCustomers = () => {
+  const images = [
+    { src: project5, delay: '0.1s' },
+    { src: service1, delay: '0.1s' },
+    { src: cu3, delay: '0.3s' },
+    { src: cu6, delay: '0.3s' },
+    { src: project7, delay: '0.5s' },
+    { src: hero2, delay: '0.5s' },
+    { src: cu4, delay: '0.7s' },
+    { src: cu8, delay: '0.7s' }
+  ];
+
   return (
-    <section className="py-16 bg-gray-100">
-      <div className="container mx-auto px-4">
-        <h2 className="text-5xl font-light text-center mb-12 italic">Moments with Our Customers</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center">
-              <img src={testimonial.image} alt={testimonial.name} className="w-24 h-24 rounded-full mb-4 object-cover border-4 border-white shadow-md"/>
-              <div className="text-gray-700 mb-4">
-                <FaQuoteLeft className="text-gray-400 text-2xl mb-2" />
-                <p className="italic">"{testimonial.quote}"</p>
-              </div>
-              <h3 className="text-lg font-bold">{testimonial.name}</h3>
+    <div className="container-xxl bg-light py-5">
+      <div className="container">
+        <div className="text-center mx-auto mb-5" style={{ maxWidth: '500px' }}>
+          <p className="text-primary text-uppercase mb-2">Our Moments With Customers</p>
+          <h1 className="display-6 mb-0">Moments With Customers</h1>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          {images.map((image, index) => (
+            <div key={index} className="wow fadeInUp" style={{ animationDelay: image.delay }}>
+              <ModalImage
+                small={image.src}
+                large={image.src}
+                alt={`Customer Moment ${index + 1}`}
+                className="img-fluid project-title h5 mb-0"
+              />
             </div>
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
-export default Moment;
+export default MomentsWithCustomers;
