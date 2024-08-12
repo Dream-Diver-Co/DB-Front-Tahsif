@@ -11,7 +11,27 @@ const Navbar = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [recaptchaValue, setRecaptchaValue] = useState(null);
   const [error, setError] = useState("");
+  const [showNavbar, setShowNavbar] = useState(false);
+
   const form = useRef();
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setShowNavbar(true);
+      } else {
+        setShowNavbar(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     if (selectedDate) {
@@ -124,7 +144,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar bg-gray-300 lg:h-20 h-16 flex items-center justify-center">
+    <div className={`navbar bg-gray-300 lg:h-20 h-16 flex items-center justify-center fixed top-0 left-0 w-screen lg:w-full z-50 transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="flex items-center justify-center">
       <div className="flex items-center justify-start space-x-4">
         <div className=''>
