@@ -11,11 +11,31 @@ const Navbar = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [recaptchaValue, setRecaptchaValue] = useState(null);
   const [error, setError] = useState("");
+  const [showNavbar, setShowNavbar] = useState(false);
+
   const form = useRef();
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setShowNavbar(true);
+      } else {
+        setShowNavbar(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     if (selectedDate) {
-      fetch(`http://localhost:3000/check-available-time?date=${encodeURIComponent(selectedDate)}`)
+      fetch(`http://localhost:5000/check-available-time?date=${encodeURIComponent(selectedDate)}`)
         .then(response => response.json())
         .then(data => setAvailableSlots(data.slots))
         .catch(err => setError("Failed to fetch available slots"));
@@ -61,14 +81,14 @@ const Navbar = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/check-slot?datetime=${encodeURIComponent(datetime)}`);
+      const response = await fetch(`http://localhost:5000/check-slot?datetime=${encodeURIComponent(datetime)}`);
       const slotAvailable = await response.json();
       
       if (!slotAvailable.available) {
         throw new Error('Selected time slot is not available.');
       }
 
-      const responseBook = await fetch("http://localhost:3000/addapp", {
+      const responseBook = await fetch("http://localhost:5000/addapp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +144,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar bg-gray-300 lg:h-20 h-16 flex items-center justify-center">
+    <div className={`navbar bg-white lg:h-20 h-16 flex items-center justify-center fixed top-0 left-0 w-screen lg:w-full z-50 transition-transform duration-300 ${showNavbar ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="flex items-center justify-center">
       <div className="flex items-center justify-start space-x-4">
         <div className=''>

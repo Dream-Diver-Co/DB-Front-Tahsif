@@ -5,6 +5,7 @@ import Navbar from './Shared/Navbar';
 import Collection from './Section/Collection';
 import Chose from './Section/Chose';
 import Moment from './Section/Moment';
+import Footer from './Shared/Footer';
 
 const Homepage = () => {
     return (
@@ -15,6 +16,7 @@ const Homepage = () => {
             <Collection></Collection>
             <Chose></Chose>
             <Moment></Moment>
+            <Footer></Footer>
         </div>
     );
 };

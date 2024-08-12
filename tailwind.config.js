@@ -5,7 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        sec: 'var(--secondary)', // This uses the CSS variable
+      },
+    },
   },
   plugins: [
     require('daisyui'),
