@@ -28,8 +28,8 @@ const MomentsWithCustomers = () => {
     <div className="container-xxl bg-light py-5">
       <div className="container">
         <div className="text-center mx-auto mb-5" style={{ maxWidth: '500px' }}>
-          <p className="text-primary text-uppercase mb-2">Our Moments With Customers</p>
-          <h1 className="display-6 mb-0">Moments With Customers</h1>
+       
+          <h1 className="display-6 mb-0 font-light text-4xl italic">Moments With Customers</h1>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           {images.map((image, index) => (
