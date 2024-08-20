@@ -13,7 +13,7 @@ const Homepage = () => {
             <Navbar></Navbar>
             <HeroSection></HeroSection>
             <Reels></Reels>
-            <Collection></Collection>
+            {/* <Collection></Collection> */}
             <Chose></Chose>
             <Moment></Moment>
             <Footer></Footer>
