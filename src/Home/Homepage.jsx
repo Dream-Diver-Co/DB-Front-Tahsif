@@ -6,6 +6,7 @@ import Collection from './Section/Collection';
 import Chose from './Section/Chose';
 import Moment from './Section/Moment';
 import Footer from './Shared/Footer';
+import Cover from './Section/Cover';
 
 const Homepage = () => {
     return (
@@ -14,6 +15,7 @@ const Homepage = () => {
             <HeroSection></HeroSection>
             <Reels></Reels>
             {/* <Collection></Collection> */}
+            <Cover></Cover>
             <Chose></Chose>
             <Moment></Moment>
             <Footer></Footer>
